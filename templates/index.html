@@ -16,6 +16,28 @@
         <h2>Generated Text:</h2>
         <p id="generated-text"></p>
     </div>
+    <div id="graph-analysis">
+        <h2>Graph Analysis</h2>
+        <div>
+            <input type="text" id="start-node" placeholder="Start node">
+            <input type="text" id="end-node" placeholder="End node (optional)">
+            <button id="find-connections-btn">Find Novel Connections</button>
+            <button id="find-path-btn">Find Shortest Path</button>
+            <button id="bidirectional-search-btn">Bidirectional Search</button>
+        </div>
+        <div>
+            <input type="number" id="steps" placeholder="Steps" value="10">
+            <button id="random-walk-btn">Random Walk</button>
+        </div>
+        <div>
+            <input type="number" id="top-n" placeholder="Top N" value="5">
+            <button id="important-nodes-btn">Find Important Nodes</button>
+        </div>
+        <div>
+            <button id="discover-novel-connections-btn">Discover Novel Connections</button>
+        </div>
+        <div id="analysis-result"></div>
+    </div>
     <a href="/graph" class="graph-link">View Knowledge Graph</a>
     <script src="/static/js/main.js"></script>
 </body>
