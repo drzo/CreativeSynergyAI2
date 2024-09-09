@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Knowledge Space - KoboldAI + AtomSpace</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>Personal Knowledge Space</h1>
+    <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('logout') }}">Logout</a></p>
+    
+    <div id="knowledge-summary">
+        <h2>Your Knowledge Graph Summary</h2>
+        <p>Total Nodes: {{ summary.node_count }}</p>
+        <p>Total Connections: {{ summary.edge_count }}</p>
+        
+        <h3>Top 5 Most Connected Concepts:</h3>
+        <ul>
+            {% for node, connections in summary.top_nodes %}
+                <li>{{ node }}: {{ connections }} connections</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div id="actions">
+        <h2>Actions</h2>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Generate New Text</a></li>
+            <li><a href="{{ url_for('graph') }}">View Full Knowledge Graph</a></li>
+        </ul>
+    </div>
+</body>
+</html>

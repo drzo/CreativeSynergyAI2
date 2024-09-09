@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1>KoboldAI + AtomSpace Creative Writing</h1>
+    <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('logout') }}">Logout</a></p>
     <div id="input-container">
         <textarea id="story-idea" placeholder="Enter your story idea here..."></textarea>
         <button id="generate-btn">Generate</button>
@@ -38,7 +39,8 @@
         </div>
         <div id="analysis-result"></div>
     </div>
-    <a href="/graph" class="graph-link">View Knowledge Graph</a>
+    <a href="{{ url_for('graph') }}" class="graph-link">View Knowledge Graph</a>
+    <a href="{{ url_for('personal_knowledge_space') }}" class="graph-link">View Personal Knowledge Space</a>
     <script src="/static/js/main.js"></script>
 </body>
 </html>
