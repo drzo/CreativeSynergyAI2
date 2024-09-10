@@ -9,7 +9,46 @@
 </head>
 <body>
     <h1>Personal Knowledge Graph</h1>
-    <div id="graph-container"></div>
+    <div class="graph-container">
+        <div id="graph-controls">
+            <input type="text" id="search-input" placeholder="Search nodes...">
+            <button id="search-btn">Search</button>
+            <label for="node-size">Node Size:</label>
+            <input type="range" id="node-size" min="1" max="20" value="5">
+            <label for="link-strength">Link Strength:</label>
+            <input type="range" id="link-strength" min="1" max="100" value="50">
+        </div>
+        <div id="graph-container"></div>
+        <div id="graph-sidebar">
+            <h2>Graph Interaction</h2>
+            <p>
+                Explore your personal knowledge graph:
+                <ul>
+                    <li>Click on a node to select it</li>
+                    <li>Ctrl/Cmd + Click to select multiple nodes</li>
+                    <li>Drag nodes to rearrange the graph</li>
+                    <li>Use mouse wheel to zoom in/out</li>
+                    <li>Click and drag the background to pan</li>
+                    <li>Use the search bar to find specific nodes</li>
+                    <li>Adjust node size and link strength using the sliders</li>
+                    <li>Select two or more nodes to highlight connections and generate "what-if" scenarios</li>
+                </ul>
+            </p>
+            <div id="selected-element-info"></div>
+        </div>
+    </div>
+    <div id="generated-content">
+        <h2>Generated Content</h2>
+        <div id="output-container">
+            <p id="generated-text"></p>
+        </div>
+    </div>
+    <div id="interactive-controls">
+        <button id="generate-what-if-btn">Generate What-If Scenario</button>
+        <button id="cluster-concepts-btn">Cluster Concepts</button>
+        <button id="generate-story-path-btn">Generate Story Path</button>
+        <button id="generate-creative-prompt-btn">Generate Creative Prompt</button>
+    </div>
     <a href="/" class="back-link">Back to Text Generation</a>
     <script src="/static/js/graph.js"></script>
 </body>

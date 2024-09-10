@@ -1,82 +1,88 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const width = 800;
-    const height = 600;
+// ... (keep existing code)
 
-    const svg = d3.select('#graph-container')
-        .append('svg')
-        .attr('width', width)
-        .attr('height', height);
+let selectedNodes = new Set();
 
-    const simulation = d3.forceSimulation()
-        .force('link', d3.forceLink().id(d => d.id))
-        .force('charge', d3.forceManyBody())
-        .force('center', d3.forceCenter(width / 2, height / 2));
+function initializeGraph(data) {
+    graphData = data;
+    
+    // ... (keep existing graph initialization code)
 
+    // Update interactive buttons
+    const interactiveControls = d3.select("#interactive-controls");
+
+    interactiveControls.select("#generate-what-if-btn")
+        .on("click", generateWhatIf);
+
+    interactiveControls.select("#cluster-concepts-btn")
+        .on("click", clusterConcepts);
+
+    interactiveControls.select("#generate-story-path-btn")
+        .on("click", generateStoryPath);
+
+    interactiveControls.select("#generate-creative-prompt-btn")
+        .on("click", generateCreativePrompt);
+
+    // ... (keep existing time travel controls)
+
+    // Update node click behavior
+    node.on("click", nodeClicked);
+}
+
+function nodeClicked(event, d) {
+    if (event.ctrlKey || event.metaKey) {
+        if (selectedNodes.has(d)) {
+            selectedNodes.delete(d);
+            d3.select(this).attr("stroke", null);
+        } else {
+            selectedNodes.add(d);
+            d3.select(this).attr("stroke", "red").attr("stroke-width", 2);
+        }
+    } else {
+        selectedNodes.clear();
+        node.attr("stroke", null);
+        selectedNodes.add(d);
+        d3.select(this).attr("stroke", "red").attr("stroke-width", 2);
+    }
+    updateInteractiveControls();
+}
+
+async function generateCreativePrompt() {
+    if (selectedNodes.size < 1) {
+        alert('Please select at least one node to generate a creative prompt.');
+        return;
+    }
+
+    const nodeIds = Array.from(selectedNodes).map(n => n.id);
     try {
-        const response = await fetch('/graph_data');
-        if (!response.ok) {
-            throw new Error('Failed to fetch graph data');
-        }
-        const graph = await response.json();
+        const response = await fetch('/generate_creative_prompt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nodes: nodeIds })
+        });
 
-        const link = svg.append('g')
-            .attr('class', 'links')
-            .selectAll('line')
-            .data(graph.links)
-            .enter().append('line')
-            .attr('stroke-width', 1);
+        if (!response.ok) throw new Error('Failed to generate creative prompt');
 
-        const node = svg.append('g')
-            .attr('class', 'nodes')
-            .selectAll('circle')
-            .data(graph.nodes)
-            .enter().append('circle')
-            .attr('r', 5)
-            .call(d3.drag()
-                .on('start', dragstarted)
-                .on('drag', dragged)
-                .on('end', dragended));
-
-        node.append('title')
-            .text(d => d.id);
-
-        simulation
-            .nodes(graph.nodes)
-            .on('tick', ticked);
-
-        simulation.force('link')
-            .links(graph.links);
-
-        function ticked() {
-            link
-                .attr('x1', d => d.source.x)
-                .attr('y1', d => d.source.y)
-                .attr('x2', d => d.target.x)
-                .attr('y2', d => d.target.y);
-
-            node
-                .attr('cx', d => d.x)
-                .attr('cy', d => d.y);
-        }
-
-        function dragstarted(event) {
-            if (!event.active) simulation.alphaTarget(0.3).restart();
-            event.subject.fx = event.subject.x;
-            event.subject.fy = event.subject.y;
-        }
-
-        function dragged(event) {
-            event.subject.fx = event.x;
-            event.subject.fy = event.y;
-        }
-
-        function dragended(event) {
-            if (!event.active) simulation.alphaTarget(0);
-            event.subject.fx = null;
-            event.subject.fy = null;
-        }
+        const data = await response.json();
+        displayGeneratedContent(data.creative_prompt);
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while fetching graph data. Please try again.');
+        alert('An error occurred while generating the creative prompt.');
     }
-});
+}
+
+function updateInteractiveControls() {
+    const whatIfBtn = d3.select("#generate-what-if-btn");
+    const storyPathBtn = d3.select("#generate-story-path-btn");
+    const creativePromptBtn = d3.select("#generate-creative-prompt-btn");
+
+    whatIfBtn.property("disabled", selectedNodes.size < 2);
+    storyPathBtn.property("disabled", selectedNodes.size < 2);
+    creativePromptBtn.property("disabled", selectedNodes.size < 1);
+}
+
+function displayGeneratedContent(content) {
+    const outputContainer = document.getElementById('generated-text');
+    outputContainer.textContent = content;
+}
+
+// ... (keep the rest of the existing code)

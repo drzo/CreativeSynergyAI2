@@ -37,6 +37,12 @@
         <div>
             <button id="discover-novel-connections-btn">Discover Novel Connections</button>
         </div>
+        <div>
+            <input type="text" id="concept1" placeholder="Concept 1">
+            <input type="text" id="concept2" placeholder="Concept 2">
+            <input type="number" id="max-depth" placeholder="Max Depth" value="5">
+            <button id="find-diverse-paths-btn">Find Diverse Paths</button>
+        </div>
         <div id="analysis-result"></div>
     </div>
     <a href="{{ url_for('graph') }}" class="graph-link">View Knowledge Graph</a>
