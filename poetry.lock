@@ -330,6 +330,20 @@ files = [
 ]
 
 [[package]]
+name = "profanity-check"
+version = "1.0.0"
+description = "A fast, robust library to check for offensive language in strings."
+optional = true
+python-versions = "*"
+files = [
+    {file = "profanity-check-1.0.0.tar.gz", hash = "sha256:b32dd3444a1fccc8527aa29330970e447b9f67659454127a15e85078ce77eb21"},
+    {file = "profanity_check-1.0.0-py3-none-any.whl", hash = "sha256:553fbe8bc0aee14dcebf93a751e4e54e5d14f58c12a364d63b9146a75c5e4e78"},
+]
+
+[package.dependencies]
+scikit-learn = ">=0.20.2"
+
+[[package]]
 name = "psycopg2-binary"
 version = "2.9.9"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
@@ -634,4 +648,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ec8c3eb648b37fdcfcf788dcf73fbeaed90ac232cb2a01c1a976e5684569f1fb"
+content-hash = "474af18327ec691214a4a8c30bf053da730a39297db3ed8955ffc60a47e51761"

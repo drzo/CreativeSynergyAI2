@@ -19,56 +19,62 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 from kobold_atomspace import KoboldInterface, AtomSpaceInterface
+from kobold_atomspace.ethical_safeguards import EthicalSafeguards
 
 kobold = KoboldInterface()
 atomspace = AtomSpaceInterface()
+ethical_safeguards = EthicalSafeguards()
 
 # ... (keep existing routes and functions)
 
-@app.route('/graph')
+@app.route('/generate', methods=['POST'])
 @login_required
-def graph():
-    nodes = atomspace.get_user_nodes(current_user.id)
-    links = atomspace.get_user_edges(current_user.id)
+def generate():
+    story_idea = request.json['story_idea']
+    
+    # Apply ethical safeguards and content moderation
+    is_appropriate, message = ethical_safeguards.moderate_content(story_idea)
+    
+    if not is_appropriate:
+        return jsonify({'error': message}), 400
 
-    # Get the earliest and latest timestamps
-    start_time = min(node['timestamp'] for node in nodes)
-    end_time = max(node['timestamp'] for node in nodes + links)
+    context = atomspace.get_relevant_context(current_user.id, story_idea)
+    generated_text = kobold.generate_text(story_idea, context)
+    
+    # Apply ethical safeguards and content moderation to the generated text
+    is_appropriate, message = ethical_safeguards.moderate_content(generated_text)
+    
+    if not is_appropriate:
+        return jsonify({'error': 'Generated content violates guidelines. Please try again.'}), 400
 
-    graph_data = {
-        'nodes': nodes,
-        'links': links,
-        'start_time': start_time,
-        'end_time': end_time
-    }
-
-    return render_template('graph.html', graph_data=graph_data)
+    return jsonify({'generated_text': generated_text})
 
 @app.route('/generate_what_if', methods=['POST'])
 @login_required
 def generate_what_if():
     nodes = request.json['nodes']
     what_if_scenario = kobold.generate_what_if(nodes)
+    
+    # Apply ethical safeguards and content moderation
+    is_appropriate, message = ethical_safeguards.moderate_content(what_if_scenario)
+    
+    if not is_appropriate:
+        return jsonify({'error': message}), 400
+
     return jsonify({'what_if_scenario': what_if_scenario})
-
-@app.route('/cluster_concepts', methods=['POST'])
-@login_required
-def cluster_concepts():
-    clusters = atomspace.cluster_user_concepts(current_user.id)
-    return jsonify({'clusters': clusters})
-
-@app.route('/generate_story_path', methods=['POST'])
-@login_required
-def generate_story_path():
-    nodes = request.json['nodes']
-    path, story = atomspace.generate_story_path(current_user.id, nodes)
-    return jsonify({'path': path, 'story': story})
 
 @app.route('/generate_creative_prompt', methods=['POST'])
 @login_required
 def generate_creative_prompt():
     nodes = request.json['nodes']
     creative_prompt = kobold.generate_creative_prompt(nodes)
+    
+    # Apply ethical safeguards and content moderation
+    is_appropriate, message = ethical_safeguards.moderate_content(creative_prompt)
+    
+    if not is_appropriate:
+        return jsonify({'error': message}), 400
+
     return jsonify({'creative_prompt': creative_prompt})
 
 # ... (keep the rest of the existing code)
